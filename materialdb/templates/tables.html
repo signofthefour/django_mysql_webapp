@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+      <nav class="navbar navbar-expand-lg navbar-transparent  navbar-absolute bg-primary fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="#pablo">Table List</a>
+          </div>
+
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="panel-header panel-header-sm">
+      </div>
+      <div class="content">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title"> Table of Intersection</h4>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class=" text-primary">
+                      <th>
+                        ID
+                      </th>
+                      <th>
+                        Long
+                      </th>
+                      <th>
+                        Lat
+                      </th>
+                    </thead>
+                    <tbody>
+                      {% for entry in object_list %}
+                        <tr>
+                          <td>{{ entry.id }}</td>
+                          <td>{{ entry.long }}</td>
+                          <td>{{ entry.lat }} </td>
+                          <td class="td-actions text-right">
+                            <form method="post">
+                          {% csrf_token %}
+
+                          <button type="submit" name="editEntry" value="{{ entry.id }},{{ entry.long }},{{ entry.lat }} rel="tooltip" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral " data-original-title="Edit">
+                            <i class="now-ui-icons ui-2_settings-90"></i></button>
+
+                          <button type="submit" name="deleteEntry" value="{{ entry.id }}" rel="tooltip" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral " data-original-title="Remove">
+                            <i class="now-ui-icons ui-1_simple-remove"></i></button>
+                          </form>
+                        </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endblock %}
