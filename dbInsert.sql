@@ -2,6 +2,30 @@
 use transportation;
 show tables;
 
+-- // Clear all tables
+drop procedure if exists ClearAll;
+delimiter $$
+create procedure ClearAll()
+begin
+	set sql_safe_updates = 0;
+	delete from materialdb_Route;
+		set foreign_key_checks = 0;
+
+		delete from materialdb_Distance;
+		delete from materialdb_Intersection;
+		delete from materialdb_Street;
+		
+        delete from materialdb_Stopping_point;
+        delete from materialdb_Ticket;
+        
+		set foreign_key_checks = 1;
+	set sql_safe_updates = 1;
+
+	truncate table seq_street;
+	truncate table seq_intersection;
+end$$
+delimiter ;
+
 call ClearAll();
 
 -- // 1.intersection ---------------------- 
@@ -74,3 +98,33 @@ values
 ('T050', 1), ('T050', 2);
 select * from materialdb_Trip;
 
+-- // 8. stopping point
+insert into materialdb_stopping_point (id, type, first_int_id, second_int_id, `name`, address)
+values
+('BT00001', 0, 'GL1', 'GL2', 'stop no 1970', 'at 1970'),
+('BT00002', 0, 'GL2', 'GL5', 'stop no 1980s', 'at 1980s'),
+('BT00003', 0, 'GL5', 'GL8', 'stop no 1990s', 'at 1990s'),
+('BT00004', 0, 'GL8', 'GL11', 'stop no 2000s', 'at 2000s'),
+('TT00001', 1, 'GL3', 'GL2', 'stop no 1989', 'at 1989'),
+('TT00002', 1, 'GL2', 'GL4', 'stop no 1988', 'at 1988');
+
+-- // 9. visits
+insert into materialdb_Visit(trip_route_id, trip_index, stopping_point_id, 
+	visit_index, arrival_time, departure_time)
+values
+('B008', 1, 'BT00001', 1, '060000', '060100'),
+('B008', 1, 'BT00002', 1, '061500', '061600'),
+('B008', 1, 'BT00003', 1, '063000', '063100'),
+('B008', 1, 'BT00004', 1, '064500', '064600'),
+('T008', 1, 'TT00001', 1, '060000', '060300'),
+('T008', 1, 'TT00002', 1, '063000', '063300');
+
+-- // 10. ticket
+insert into materialdb_Ticket(ticket_id, `type`, price, purchase_date, customer_id)
+values
+('VO3101202100001', '0', 7.0, current_timestamp(), NULL),
+('VO3101202100002', '0', 7.0, current_timestamp(), NULL),
+('VO3101202100003', '0', NULL, current_timestamp(), NULL),
+('VD3101202100001', '2', NULL, current_timestamp(), NULL),
+('VM3101202100001', '1', NULL, current_timestamp(), NULL);
+select * from materialdb_Ticket;
