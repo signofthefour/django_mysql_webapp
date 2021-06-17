@@ -278,7 +278,6 @@ internal_phone	char
 
 create	table	materialdb_Workplace
 (
-uid int not null ,
 staff_id	char(6)	primary key,
 station_id	char(7),
 constraint	fk_workplace_staff	foreign key	(staff_id)
@@ -297,24 +296,7 @@ create table materialdb_User (
 	`password` char(30)
 );
 
-INSERT INTO `TRANSPORTATION`.`materialdb_User` (`user_name`, `password`) VALUES ('sManager', '123456789');
-
--- // Clear all tables
-delimiter $$
-create procedure ClearAll()
-begin
-	set sql_safe_updates = 0;
-	delete from materialdb_Route;
-		set foreign_key_checks = 0;
-
-		delete from materialdb_Distance;
-		delete from materialdb_Intersection;
-		delete from materialdb_Street;
-        
-		set foreign_key_checks = 1;
-	set sql_safe_updates = 1;
-
-	truncate table seq_street;
-	truncate table seq_intersection;
-end$$
-delimiter ;
+alter table materialdb_Ticket
+add constraint fk_ticket_passenger_id 
+foreign key (customer_id) references materialdb_Passenger(passenger_id)
+on update cascade on delete restrict;
