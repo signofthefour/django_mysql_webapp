@@ -22,4 +22,3 @@ python manage.py runserver
 ```
 
 Then visit http://localhost:8000 on your browser
-test
