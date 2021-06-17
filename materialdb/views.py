@@ -1,41 +1,46 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, ListView
 from django.template import RequestContext
-from .models import Intersection
+from .models import Passenger
 from materialdb.forms import AddIntersection
 
 
-class dashboardView(ListView):
+class DashboardView(ListView):
     template_name = 'dashboard.html'
 
     def get_queryset(self):
-        return Intersection.objects.all()
+        return Passenger.objects.all()
 
-class tableView(ListView):
-    template_name = 'tables.html'
+class RouteTableView(ListView):
+    template_name = './user/table.html'
 
     def get_queryset(self):
-        return Intersection.objects.all()
+        return Passenger.objects.all()
 
     def post(self, request):
-        form = Intersection(request.POST or None)
+        form = Passenger(request.POST or None)
 
         context = { 'form': form }
+
         if 'deleteEntry' in request.POST:
             id_num = request.POST['deleteEntry']
-            Intersection.objects.filter(id=id_num).delete()
+            Passenger.objects.filter(passenger_id=id_num).delete()
 
-            return redirect('/')
+            return redirect('/user/tableview')
 
         elif 'editEntry' in request.POST:
 
             values = request.POST['editEntry']
             values = values.split(',')
             request.session['id'] = values[0]
-            request.session['long'] = values[1]
-            request.session['lat'] = values[2]
+            request.session['ssn'] = values[1]
+            request.session['job'] = values[2]
+            request.session['sex'] = values[3]
+            request.session['email'] = values[4]
+            request.session['dob'] = values[5]
 
-            return redirect('/edit')
+
+            return redirect('route/edit')
 
 class addIntersectionView(TemplateView):
     template_name = 'addperson.html'
@@ -52,39 +57,57 @@ class addIntersectionView(TemplateView):
             id = form.cleaned_data['id']
             context.update({'id': id})
 
-            long = form.cleaned_data['long']
-            context.update({'long': long})
+            ssn = form.cleaned_data['ssn']
+            context.update({'ssn': ssn})
 
-            lat = form.cleaned_data['lat']
-            context.update({'lat': lat})
+            job = form.cleaned_data['job']
+            context.update({'job': job})
 
-            Intersection.objects.create_user(id, long, lat)
-            return redirect('/')
+            sex = form.cleaned_data['sex']
+            context.update({'sex': sex})
+
+            email = form.cleaned_data['email']
+            context.update({'email': email})
+
+            dob = form.cleaned_data['dob']
+            context.update({'dob': dob})
+
+            Passenger.objects.create_user(passenger_id=id, ssn=ssn, job=job, sex=sex, email=email, dob=dob)
+            return redirect('/route/table')
 
         return render(request, self.template_name, context)
 
-class editIntersectionView(TemplateView):
-    template_name = 'editIntersection.html'
+class EditIntersectionView(TemplateView):
+    template_name = './route/edit.html'
 
     def get(self, request):
-        form = Intersection()
-        return render(request, self.template_name, {'form':form})
+        passenger = Passenger()
+        return render(request, self.template_name, {'form':[passenger]})
 
     def post(self, request):
-        form = Intersection(request.POST or None)
+        form = Passenger(request.POST or None)
         context = { 'form': form }
         if form.is_valid():
 
-            _id = request.POST['id']
-            context.update({'id': _id})
+            id = form.cleaned_data['id']
+            context.update({'id': id})
 
-            _long = form.cleaned_data['long']
-            context.update({'long': _long})
+            ssn = form.cleaned_data['ssn']
+            context.update({'ssn': ssn})
 
-            _lat = form.cleaned_data['lat']
-            context.update({'lat': _lat})
+            job = form.cleaned_data['job']
+            context.update({'job': job})
 
-            person = Intersection.objects.filter(id=_id).update(id=_id, long=_long, lat=_lat)
+            sex = form.cleaned_data['sex']
+            context.update({'sex': sex})
 
-            return redirect('/')
+            email = form.cleaned_data['email']
+            context.update({'email': email})
+
+            dob = form.cleaned_data['dob']
+            context.update({'dob': dob})
+
+            passenger= Passenger.objects.create_user(passenger_id=id, ssn=ssn, job=job, sex=sex, email=email, dob=dob)
+
+            return redirect('/route/tableview')
         return render(request, self.template_name, context)

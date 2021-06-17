@@ -35,24 +35,46 @@
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li class="active ">
-            <a href="/">
-              <i class="now-ui-icons"></i>
-              <p>Log out</p>
-            </a>
-          </li>
-          <li>
-            <a href="/user/tableview">
-              <i class="now-ui-icons users_single-02"></i>
-              <p>Users</p>
-            </a>
-          </li>
         </ul>
       </div>
     </div>
     <div class="main-panel">
-      {% block content %}
-      {% endblock %}
+      <nav class="navbar navbar-expand-lg navbar-transparent  navbar-absolute bg-primary fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="panel-header panel-header-sm">
+      </div>
+      <div class="content">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title"> STAFF WORKSPACE </h4>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <h2>Log In</h2>
+                    <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Log In</button>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
           </div>
         </div>
       </div>

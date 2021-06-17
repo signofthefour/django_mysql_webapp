@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+      <nav class="navbar navbar-expand-lg navbar-transparent  navbar-absolute bg-primary fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="#pablo">Edit Profile</a>
+          </div>
+
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="panel-header panel-header-sm">
+      </div>
+      <div class="content">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="title">Edit Profile</h5>
+
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+
+              </div>
+              <div class="card-body">
+                {% block body %}
+                <form method="post">
+                  {% csrf_token %}
+                  <div class="row">
+                    <div class="col-md-6 pr-1">
+                      <div class="form-group">
+                        <input type="hidden" name="id" value="{{ request.session.id }}">
+                        <label>ID</label>
+                        <input type="text" name="id" class="form-control" placeholder="ID" value="{{ request.session.id }}">
+                      </div>
+                    </div>
+                    </div>
+                  <div class="row">
+                    <div class="col-md-6 pr-1">
+                      <div class="form-group">
+                        <label>Social Sercurity Number</label>
+                        <input type="text" name="ssn" class="form-control" placeholder="SSN" value="{{ request.session.ssn }}">
+                      </div>
+                    </div>
+                  </div>
+                    <div class="row">
+                    <div class="col-md-6 pr-1">
+                      <div class="form-group">
+                        <label>City</label>
+                        <input type="text" name="long" class="form-control" placeholder="Long" value="{{ request.session.long }}">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card card-user">
+              <div class="image">
+              </div>
+              <div class="card-body">
+                <div class="author">
+                  <a href="#">
+                    <h5 class="title">Editing Users to Table</h5>
+                  </a>
+                  <p class="description">
+                    How to edit Users
+                  </p>
+                </div>
+                <p class="description text-center">
+                  Just input their update information
+                  <br>and in the table tab you
+                  <br>will be able to see the updated entries.
+                </p>
+              </div>
+              <hr>
+              <div class="button-container">
+                <button type="submit">Update</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+   {% endblock %}
+   {% endblock %}
