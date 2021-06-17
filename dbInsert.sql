@@ -8,15 +8,22 @@ delimiter $$
 create procedure ClearAll()
 begin
 	set sql_safe_updates = 0;
-	delete from materialdb_Route;
-		set foreign_key_checks = 0;
-
+    set foreign_key_checks = 0;
+		delete from materialdb_Route;
 		delete from materialdb_Distance;
 		delete from materialdb_Intersection;
 		delete from materialdb_Street;
-		
         delete from materialdb_Stopping_point;
         delete from materialdb_Ticket;
+        delete from materialdb_Bus_route;
+        delete from materialdb_Train_route;
+        delete from materialdb_Trip;
+        delete from materialdb_Visit;
+        delete from materialdb_Regular_ticket;
+        delete from materialdb_Monthly_ticket;
+        delete from materialdb_Oneday_ticket;
+        delete from materialdb_Monthly_ticket_record;
+        delete from materialdb_Oneday_ticket_record;
         
 		set foreign_key_checks = 1;
 	set sql_safe_updates = 1;
@@ -125,6 +132,214 @@ values
 ('VO3101202100001', '0', 7.0, current_timestamp(), NULL),
 ('VO3101202100002', '0', 7.0, current_timestamp(), NULL),
 ('VO3101202100003', '0', NULL, current_timestamp(), NULL),
+('VO3101202100004', '0', 7.0, current_timestamp(), NULL),
+('VO3101202100005', '0', 7.0, current_timestamp(), NULL),
 ('VD3101202100001', '2', NULL, current_timestamp(), NULL),
-('VM3101202100001', '1', NULL, current_timestamp(), NULL);
+('VD3101202100002', '2', NULL, current_timestamp(), NULL),
+('VD3101202100003', '2', NULL, current_timestamp(), NULL),
+('VD3101202100004', '2', NULL, current_timestamp(), NULL),
+('VD3101202100005', '2', NULL, current_timestamp(), NULL),
+('VM3101202100001', '1', NULL, current_timestamp(), NULL),
+('VM3101202100002', '1', NULL, current_timestamp(), NULL),
+('VM3101202100003', '1', NULL, current_timestamp(), NULL),
+('VM3101202100004', '1', NULL, current_timestamp(), NULL),
+('VM3101202100005', '1', NULL, current_timestamp(), NULL);
 select * from materialdb_Ticket;
+
+-- begin insert into Regular ticket-- 
+ 
+INSERT INTO materialdb_Regular_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE materialdb_Ticket.type = '0' ORDER BY ticket_id LIMIT 0,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        use_date = date('2021-4-21'),
+        enter_time = time('08:00:00'),
+        leave_time = time('10:00:00');
+
+INSERT INTO materialdb_Regular_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE materialdb_Ticket.type = '0' ORDER BY ticket_id LIMIT 1,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        use_date = date('2021-4-21'),
+        enter_time = time('09:00:00'),
+        leave_time = time('10:00:00');
+
+INSERT INTO materialdb_Regular_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE materialdb_Ticket.type = '0' ORDER BY ticket_id LIMIT 2,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        use_date = date('2021-5-21'),
+        enter_time = time('07:00:00'),
+        leave_time = time('10:00:00');
+
+INSERT INTO materialdb_Regular_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE materialdb_Ticket.type = '0' ORDER BY ticket_id LIMIT 3,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        use_date = date('2021-6-1'),
+        enter_time = time('08:00:00'),
+        leave_time = time('15:00:00');
+
+INSERT INTO materialdb_Regular_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE materialdb_Ticket.type = '0' ORDER BY ticket_id LIMIT 4,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        use_date = date('2021-4-12'),
+        enter_time = time('07:00:00'),
+        leave_time = time('12:00:00');
+        
+-- END insert into Regular ticket
+
+-- BEGIN insert into Oneday ticket
+INSERT INTO materialdb_Oneday_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '2' ORDER BY ticket_id LIMIT 0,1),
+        use_date = date('2021-3-12');
+
+INSERT INTO materialdb_Oneday_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '2' ORDER BY ticket_id LIMIT 1,1),
+        use_date = date('2021-3-12');
+        
+INSERT INTO materialdb_Oneday_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '2' ORDER BY ticket_id LIMIT 2,1),
+        use_date = date('2021-4-13');
+        
+INSERT INTO materialdb_Oneday_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '2' ORDER BY ticket_id LIMIT 3,1),
+		use_date = date('2021-4-15');
+
+INSERT INTO materialdb_Oneday_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '2' ORDER BY ticket_id LIMIT 4,1),
+        use_date = date('2021-5-12');
+
+-- END insert into oneday ticket
+
+-- BEGIN insert into Monthly_ticket
+INSERT INTO materialdb_Monthly_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '1' ORDER BY ticket_id LIMIT 0,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1);
+
+INSERT INTO materialdb_Monthly_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '1' ORDER BY ticket_id LIMIT 1,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1);
+
+INSERT INTO materialdb_Monthly_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '1' ORDER BY ticket_id LIMIT 2,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1);
+
+
+INSERT INTO materialdb_Monthly_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '1' ORDER BY ticket_id LIMIT 3,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1);
+
+INSERT INTO materialdb_Monthly_ticket
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '1' ORDER BY ticket_id LIMIT 4,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1);
+
+-- END insert into monthly ticket
+
+-- BEGIN insert into monthly ticket record
+INSERT INTO materialdb_Monthly_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Monthly_ticket ORDER BY ticket_id LIMIT 0,1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        use_date = date('2021-5-12'),
+        enter_time = time('07:00:00'),
+        leave_time = time('08:00:00');
+
+INSERT INTO materialdb_Monthly_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Monthly_ticket ORDER BY ticket_id LIMIT 1,1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        use_date = date('2021-4-12'),
+        enter_time = time('07:00:00'),
+        leave_time = time('14:00:00');
+
+INSERT INTO materialdb_Monthly_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Monthly_ticket ORDER BY ticket_id LIMIT 1,1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        use_date = date('2021-4-12'),
+        enter_time = time('01:00:00'),
+        leave_time = time('02:00:00');
+
+INSERT INTO materialdb_Monthly_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Monthly_ticket ORDER BY ticket_id LIMIT 2,1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        use_date = date('2021-3-12'),
+        enter_time = time('12:00:00'),
+        leave_time = time('18:00:00');
+
+INSERT INTO materialdb_Monthly_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Monthly_ticket ORDER BY ticket_id LIMIT 2,1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        use_date = date('2021-5-12'),
+        enter_time = time('18:00:00'),
+        leave_time = time('19:00:00');
+        
+-- END insert into monthly ticket record
+
+-- BEGIN insert into oneday ticket record
+INSERT INTO materialdb_Oneday_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Oneday_ticket ORDER BY ticket_id LIMIT 0,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        enter_time = time('18:00:00'),
+        leave_time = time('19:00:00');
+        
+INSERT INTO materialdb_Oneday_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Oneday_ticket ORDER BY ticket_id LIMIT 0,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        enter_time = time('18:00:00'),
+        leave_time = time('21:00:00');
+
+INSERT INTO materialdb_Oneday_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Oneday_ticket ORDER BY ticket_id LIMIT 3,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        enter_time = time('05:00:00'),
+        leave_time = time('12:00:00');
+
+INSERT INTO materialdb_Oneday_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Oneday_ticket ORDER BY ticket_id LIMIT 3,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        enter_time = time('13:00:00'),
+        leave_time = time('17:00:00');
+        
+INSERT INTO materialdb_Oneday_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Oneday_ticket ORDER BY ticket_id LIMIT 4,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        enter_time = time('06:00:00'),
+        leave_time = time('09:00:00');
+        
+INSERT INTO materialdb_Oneday_ticket_record
+	SET ticket_id = ( SELECT ticket_id FROM materialdb_Oneday_ticket ORDER BY ticket_id LIMIT 4,1),
+		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
+        enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
+        enter_time = time('12:00:00'),
+        leave_time = time('13:00:00');
