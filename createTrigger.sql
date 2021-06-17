@@ -1,6 +1,9 @@
 USE TRANSPORTATION;
 DELIMITER //
 
+SELECT * FROM materialdb_Ticket;
+
+DROP TRIGGER IF EXISTS update_ticket_price;
 CREATE TRIGGER update_ticket_price
 AFTER INSERT
 ON materialdb_Ticket 
@@ -33,7 +36,7 @@ BEGIN
 	IF NEW.type LIKE '1' AND NEW.price IS NULL THEN
 		SET UNIT := (SELECT bus_unit_price FROM materialdb_Price_list LIMIT 1);
         SET MONTHLYPRICE = UNIT * ROUND((SELECT COUNT(*) FROM materialdb_Stopping_point) / 2 ) * 20 * 2;
-        IF (SELECT * FROM Passenger WHERE passenger_id = NEW.customer_id AND job = 'student')  THEN
+        IF (SELECT * FROM Passenger WHERE passenger_id = NEW.customer_id AND job = 'student') IS NOT NULL THEN
 			SET MONTHLYPRICE = ROUND(MONTHLYPRICE / 2);
 		ELSE
 -- 			SELECT * 
@@ -55,5 +58,6 @@ BEGIN
     END IF;
     
 END //
+
 
 DELIMITER ;
