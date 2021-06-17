@@ -121,7 +121,6 @@ create table materialdb_Monthly_ticket (
     `route_id` char(4),
 	`enter_point_id` char(7),
     `leave_point_id` char(7),
-    `use_date` datetime,
 	primary key (ticket_id),
     constraint fk_mticket foreign key(ticket_id)  references materialdb_Ticket(ticket_id),
     constraint fk_mroute foreign key(route_id) references materialdb_Route(route_id),
