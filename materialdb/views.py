@@ -49,23 +49,16 @@ class addIntersectionView(TemplateView):
 
         context = { 'form': form }
         if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            context.update({'first_name': first_name})
+            id = form.cleaned_data['id']
+            context.update({'id': id})
 
-            last_name = form.cleaned_data['last_name']
-            context.update({'last_name': last_name})
+            long = form.cleaned_data['long']
+            context.update({'long': long})
 
-            salary = form.cleaned_data['salary']
-            context.update({'salary': salary})
+            lat = form.cleaned_data['lat']
+            context.update({'lat': lat})
 
-            country = form.cleaned_data['country']
-            context.update({'country': country})
-
-            city = form.cleaned_data['city']
-            context.update({'city': city})
-
-
-            Intersection.objects.create_user(first_name, last_name, country, city, salary)
+            Intersection.objects.create_user(id, long, lat)
             return redirect('/')
 
         return render(request, self.template_name, context)
