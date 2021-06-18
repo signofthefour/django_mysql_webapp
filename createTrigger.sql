@@ -36,7 +36,7 @@ BEGIN
 	IF NEW.type LIKE '1' AND NEW.price IS NULL THEN
 		SET UNIT := (SELECT bus_unit_price FROM materialdb_Price_list LIMIT 1);
         SET MONTHLYPRICE = UNIT * ROUND((SELECT COUNT(*) FROM materialdb_Stopping_point) / 2 ) * 20 * 2;
-        IF (SELECT * FROM materialdb_Passenger WHERE passenger_id = NEW.customer_id AND job = 'student') IS NOT NULL THEN
+        IF EXISTS (SELECT * FROM materialdb_Passenger WHERE passenger_id = NEW.customer_id AND job LIKE '%student%') THEN
 			SET MONTHLYPRICE = ROUND(MONTHLYPRICE / 2);
 		ELSE
 -- 			SELECT * 
@@ -45,7 +45,7 @@ BEGIN
 -- 					INNER JOIN materialdb_Monthly_ticket ON T_id.ticket_id = materialdb_Monthly_ticket.ticket_id))
 -- 			WHERE route_id = NEW.route_id and enter_point_id = NEW.enter_point....
             
-			IF (SELECT ticket_id 
+			IF EXISTS (SELECT ticket_id 
 				FROM materialdb_Ticket 
 				WHERE customer_id = NEW.customer_id AND DATEDIFF(curdate(), purchase_date) < 30) THEN
 				
@@ -63,6 +63,3 @@ DELIMITER ;
 -- test the result --
 SELECT *
 FROM materialdb_Ticket;
-
--- INSERT INTO materialdb_Ticket VALUES
--- ('VD3101202100001', 
