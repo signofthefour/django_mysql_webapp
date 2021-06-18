@@ -1,9 +1,7 @@
 use transportation;
 
+-- begin implementation --
 drop function if exists transportation.LoTrinhTuyenXeTau;
-
--- // -------------------------
-
 DELIMITER $$
 create function transportation.LoTrinhTuyenXeTau(
 	routeIdToSearch char(4)
@@ -33,25 +31,6 @@ BEGIN
 END$$
 delimiter ;
 
--- testing
-set @routeIdToSearch := 'B050';
-set @routeIdToSearch := 'B008';
-set @routeIdToSearch := 'T050';
-set @routeIdToSearch := 'T008';
-set @routeIdToSearch := 'C008';
-
-select LoTrinhTuyenXeTau(@routeIdToSearch);
-
-
--- -- // count regular turns -------------------------
-
--- select use_date, count(*)
--- from materialdb_Regular_ticket
--- where use_date is not null
--- and route_id = @myRouteID
--- group by date(use_date);
-
--- -- // count day turns
--- select *
--- from materialdb_Monthly_ticket_record;
--- where route_id = @myRouteID;
+-- test the result
+select distinct route_id, LoTrinhTuyenXeTau(route_id)
+from materialdb_Route;

@@ -1,31 +1,32 @@
--- use testing;
 use transportation;
-show tables;
 
--- // Clear all tables
+-- Clear all tables --
 drop procedure if exists ClearAll;
 delimiter $$
 create procedure ClearAll()
 begin
-	set sql_safe_updates = 0;
+set sql_safe_updates = 0;
     set foreign_key_checks = 0;
 		delete from materialdb_Route;
 		delete from materialdb_Distance;
 		delete from materialdb_Intersection;
 		delete from materialdb_Street;
         delete from materialdb_Stopping_point;
-        delete from materialdb_Ticket;
         delete from materialdb_Bus_route;
         delete from materialdb_Train_route;
         delete from materialdb_Trip;
         delete from materialdb_Visit;
+        delete from materialdb_Monthly_ticket_record;
+        delete from materialdb_Oneday_ticket_record;
         delete from materialdb_Regular_ticket;
         delete from materialdb_Monthly_ticket;
         delete from materialdb_Oneday_ticket;
-        delete from materialdb_Monthly_ticket_record;
-        delete from materialdb_Oneday_ticket_record;
+		delete from materialdb_Ticket;
         delete from materialdb_User;
-        
+        delete from materialdb_Magnetic_card;
+        delete from materialdb_Passenger;
+        delete from materialdb_Staff;
+        delete from materialdb_Workplace;
 		set foreign_key_checks = 1;
 	set sql_safe_updates = 1;
 
@@ -38,7 +39,9 @@ call ClearAll();
 
 INSERT INTO `TRANSPORTATION`.`materialdb_User` (`user_name`, `password`) VALUES ('sManager', '123456789');
 
--- // 1.intersection ---------------------- 
+insert into materialdb_Price_list values('5000','30000','40000');
+
+-- 1.intersection --
 insert into materialdb_intersection(`long`, lat)
 values
 (19, 60),
@@ -53,7 +56,7 @@ values
 (20, 11),
 (20, 07);
 
--- // 3.street ---------------------- 
+-- 3.street --
 insert into materialdb_Street (name)
 values
 ('1 to 11 | Email to anti-phishing'),
@@ -61,7 +64,7 @@ values
 ('6 to 7 | HTML email to AOL and Delphi'),
 ('8 to 10 | 2000s to Facebook Messaging system');
 
--- // 2. distance
+-- 2. distance --
 insert into materialdb_distance (first_int_id, second_int_id, street_id, dist_index, length) 
 values
 ('GL1', 'GL2', 'CD1', 1, 20.0),
@@ -75,17 +78,17 @@ values
 ('GL8', 'GL9', 'CD4', 1, 1.0),
 ('GL9', 'GL10', 'CD4', 2, 1.0);
 
--- // 4. route
+-- 4. route --
 insert into materialdb_Route (route_id)
 values 
 ('B008'), ('B050'), ('T008'), ('T050'),
 ('B108'), ('B150'), ('T108'), ('T150'); 
 
--- // 5. bus route
+-- 5. bus route --
 insert into materialdb_Bus_route(route_id)
 values ('B008'), ('B108'), ('B050'), ('B150');
 
--- // 6. train_route
+-- 6. train_route --
 insert into materialdb_Train_route(route_id, train_route_id, unit_price, `name`)
 values 
 ('T008', 'A', 7000, 'Petro A008'),
@@ -93,7 +96,7 @@ values
 ('T050', 'X', 7000, 'Petro X005'), 
 ('T150', 'Z', 7000, 'Petro Z105');
 
--- // 7. trip
+-- 7. trip --
 insert into materialdb_Trip (route_id, trip_index)
 values 
 ('B008', 1), ('B008', 2),
@@ -101,7 +104,7 @@ values
 ('T008', 1),
 ('T050', 1), ('T050', 2);
 
--- // 8. stopping point
+-- 8. stopping point --
 insert into materialdb_stopping_point (id, type, first_int_id, second_int_id, `name`, address)
 values
 ('BT00001', 0, 'GL1', 'GL2', 'stop no 1970', 'at 1970'),
@@ -111,7 +114,7 @@ values
 ('TT00001', 1, 'GL3', 'GL2', 'stop no 1989', 'at 1989'),
 ('TT00002', 1, 'GL2', 'GL4', 'stop no 1988', 'at 1988');
 
--- // 9. visits
+-- 9. visits --
 insert into materialdb_Visit(trip_route_id, trip_index, stopping_point_id, 
 	visit_index, arrival_time, departure_time)
 values
@@ -122,7 +125,14 @@ values
 ('T008', 1, 'TT00001', 1, '060000', '060300'),
 ('T008', 1, 'TT00002', 2, '063000', '063300');
 
--- // 10. ticket
+-- passenger
+insert into materialdb_Passenger values('HK000001','235142685','teacher','0145623574','M','scott@yahoo.com','1998-02-04');
+insert into materialdb_Passenger values('HK000002','325487516','doctor','0159852346','F','jenny@yahoo.com','1986-01-08');
+insert into materialdb_Passenger values('HK000003','258963147','farmer','0254654125','M','tonny@yahoo.com','2000-06-02');
+insert into materialdb_Passenger values('HK000004','963357159','nurse','0325478965','F','elena@yahoo.com','1991-05-07');
+insert into materialdb_Passenger values('HK000005','344951373','student','0344951373','M','phuc@yahoo.com','2001-05-07');
+
+-- 10. ticket --
 insert into materialdb_Ticket(ticket_id, `type`, price, purchase_date, customer_id)
 values
 ('VO3101202100001', '0', NULL, current_timestamp(), NULL),
@@ -130,16 +140,44 @@ values
 ('VO3101202100003', '0', NULL, current_timestamp(), NULL),
 ('VO3101202100004', '0', NULL, current_timestamp(), NULL),
 ('VO3101202100005', '0', NULL, current_timestamp(), NULL),
+
 ('VD3101202100001', '2', NULL, current_timestamp(), NULL),
 ('VD3101202100002', '2', NULL, current_timestamp(), NULL),
 ('VD3101202100003', '2', NULL, current_timestamp(), NULL),
 ('VD3101202100004', '2', NULL, current_timestamp(), NULL),
-('VD3101202100005', '2', NULL, current_timestamp(), NULL),
-('VM3101202100001', '1', NULL, current_timestamp(), NULL),
-('VM3101202100002', '1', NULL, current_timestamp(), NULL),
-('VM3101202100003', '1', NULL, current_timestamp(), NULL),
-('VM3101202100004', '1', NULL, current_timestamp(), NULL),
-('VM3101202100005', '1', NULL, current_timestamp(), NULL);
+('VD3101202100005', '2', NULL, current_timestamp(), NULL);
+
+INSERT INTO materialdb_Ticket
+SET	ticket_id = 'VM3101202100001',
+	customer_id = (SELECT passenger_id FROM materialdb_Passenger WHERE email LIKE '%phuc%' LIMIT 1),
+	purchase_date = TIMESTAMP('2021-01-01 10:10:10'),
+	type = '1', price = NULL;
+
+INSERT INTO materialdb_Ticket
+SET	ticket_id = 'VM3101202100002',
+	customer_id = (SELECT passenger_id FROM materialdb_Passenger WHERE email LIKE '%phuc%' LIMIT 1),
+	purchase_date = TIMESTAMP('2021-06-18 10:10:10'),
+	type = '1', price = NULL;
+
+
+INSERT INTO materialdb_Ticket
+SET	ticket_id = 'VM3101202100003',
+	customer_id = (SELECT passenger_id FROM materialdb_Passenger LIMIT 1),
+	purchase_date = TIMESTAMP('2021-05-13 12:30:00'),
+	type = '1', price = NULL;
+
+INSERT INTO materialdb_Ticket
+SET	ticket_id = 'VM3101202100004',
+	customer_id = (SELECT passenger_id FROM materialdb_Passenger LIMIT 1, 1),
+	purchase_date = TIMESTAMP('2021-04-17 08:00:00'),
+	type = '1', price = NULL;
+
+INSERT INTO materialdb_Ticket
+SET	ticket_id = 'VM3101202100005',
+	customer_id = (SELECT passenger_id FROM materialdb_Passenger LIMIT 1, 1),
+	purchase_date = TIMESTAMP('2021-06-15 21:00:00'),
+	type = '1', price = NULL;
+
 
 -- begin insert into Regular ticket-- 
  
@@ -209,7 +247,7 @@ INSERT INTO materialdb_Oneday_ticket
 
 INSERT INTO materialdb_Oneday_ticket
 	SET ticket_id = ( SELECT ticket_id FROM materialdb_Ticket WHERE type = '2' ORDER BY ticket_id LIMIT 4,1),
-        use_date = date('2021-5-12');
+        use_date = NULL; -- date('2021-5-12');
 
 -- END insert into oneday ticket
 
@@ -304,7 +342,7 @@ INSERT INTO materialdb_Oneday_ticket_record
 		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
         enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
         leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
-        enter_time = time('18:00:00'),
+        enter_time = time('19:00:00'),
         leave_time = time('21:00:00');
 
 INSERT INTO materialdb_Oneday_ticket_record
@@ -341,46 +379,21 @@ INSERT INTO materialdb_Oneday_ticket_record
 
 -- 16 TO 20 --
 
--- passenger
--- alter table materialdb_Passenger
--- no check constraint all
-describe materialdb_Passenger ;
-insert into materialdb_Passenger values('HK000001','235142685','teacher','0145623574','M','scott@yahoo.com','1998-02-04');
-insert into materialdb_Passenger values('HK000002','325487516','doctor','0159852346','F','jenny@yahoo.com','1986-01-08');
-insert into materialdb_Passenger values('HK000003','258963147','farmer','0254654125','M','tonny@yahoo.com','2000-06-02');
-insert into materialdb_Passenger values('HK000004','963357159','nurse','0325478965','F','elena@yahoo.com','1991-05-07');
--- select* from materialdb_Passenger
-
 -- magnatic card
--- alter table materialdb_Magnetic_card
--- nocheck constraint all
-describe materialdb_Magnetic_card ;
 insert into materialdb_Magnetic_card values('TT000001',NOW(),'HK000003');
 insert into materialdb_Magnetic_card values('TT000002',NOW(),'HK000004');
 insert into materialdb_Magnetic_card values('TT000003',NOW(),'HK000002');
 insert into materialdb_Magnetic_card values('TT000004',NOW(),'HK000001');
--- select* from materialdb_Magnetic_card
+insert into materialdb_Magnetic_card values('TT000005',NOW(),'HK000005');
 
 -- staff
--- alter table materialdb_Staff
--- nocheck constraint all
-describe materialdb_Staff ;
 insert into materialdb_Staff values('NV0001','engineer','1975-09-08','john@gmail.com','M','0354682975','7');
 insert into materialdb_Staff values('NV0002','manager','1982-12-12','alex@gmail.com','M','0021354752','2');
 insert into materialdb_Staff values('NV0003','ticket seller','1999-05-02','jenifer@gmail.com','F','0213456258','5');
 insert into materialdb_Staff values('NV0004','security guard','2000-11-10','david@gmail.com','M','0327894124','1');
 
 -- workplace
--- alter table materialdb_Workplace
--- nocheck constraint all
-describe materialdb_Workplace ;
 insert into materialdb_Workplace values('NV0002','BT00001');
 insert into materialdb_Workplace values('NV0004','BT00003');
 insert into materialdb_Workplace values('NV0001','BT00002');
 insert into materialdb_Workplace values('NV0003','BT00004');
--- select* from materialdb_Workplace
-
--- price list
--- alter table materialdb_Price_list
--- nocheck constraint all
-insert into materialdb_Price_list values('5','30000','40000');
