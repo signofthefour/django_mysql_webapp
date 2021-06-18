@@ -1,5 +1,5 @@
 from django.db import router
-from materialdb.models import Route, Stopping_point, Trip
+from materialdb.models import Route, Stopping_point, Trip, Visit
 from django import forms
 from django.forms.widgets import ChoiceWidget
 
@@ -35,6 +35,8 @@ class AddRoute(forms.Form):
     train_route_id = forms.CharField(label='Train route ID  (if type is Train): ', max_length=1, required=False)
 
     def clean(self):
+        id_list = list(Route.objects.all().values())
+        id_list = [id['route_id'] for id in id_list]
         cleaned_data = super(forms.Form, self).clean()
         is_train = 'T' in cleaned_data.get("route_id_type")
         train_name = cleaned_data.get("train_name")
@@ -49,6 +51,8 @@ class AddRoute(forms.Form):
                 raise forms.ValidationError("Train route id is required")
             elif train_route_id.islower():
                 raise forms.ValidationError("Train route id must be UPPERCASE ALPHABET")
+        if cleaned_data.get("route_id_type") + str(cleaned_data.get("route_id_num")) in id_list:
+            raise forms.ValidationError("Route already exist")
 
         return cleaned_data
 
@@ -58,7 +62,7 @@ STOPPING_LIST = [(stop['id'], str(stop['name']).upper() + ' at ' + str(stop['add
 
 class AddVisit(forms.Form):
     route_id = forms.CharField(label='Route ID: ', max_length=4)
-    trip_index = forms.IntegerField(label='Trip Index: ')
+    trip_index = forms.IntegerField(label='Trip Index: ', min_value=1)
     stopping_point_id = forms.ChoiceField(label='Stopping point', choices=STOPPING_LIST, required=True)
     index = forms.IntegerField(label='At Index', required=True)
     arrival_time = forms.TimeField(label='Arrive at', required=True )
@@ -66,12 +70,20 @@ class AddVisit(forms.Form):
 
     def clean(self):
         cleaned_data = super(forms.Form, self).clean()
+        stopping_point = cleaned_data.get("stopping_point_id")
         route_id = cleaned_data.get("route_id")
         trip_index = cleaned_data.get("trip_index")
-        stopping_point = cleaned_data.get("stopping_point_id")
         arrival_time = cleaned_data.get("arrival_time")
         departure_time = cleaned_data.get("departure_time")
-
+        
+        visit_list = list(Visit.objects.all().values())
+        for visit in visit_list:
+            if visit['trip_route_id'] == route_id and visit['trip_index'] == trip_index and visit['stopping_point_id'] == stopping_point:
+                raise forms.ValidationError("Existed Stopping point in this trip")
+        
+        
+        # if arrival_time >= departure_time:
+        #     raise forms.ValidationError("Arrive time must be before Depart time")
         if not stopping_point:
             raise forms.ValidationError("Please choose stopping_point")
         if not arrival_time:

@@ -5,7 +5,7 @@ from django.urls.conf import path
 from django.views.generic import TemplateView, ListView
 from django.template import RequestContext
 from .models import *
-from materialdb.forms import AddRoute, AddTrip, AddVisit
+from materialdb.forms import AddRoute, AddTrip, AddVisit, STOPPING_LIST
 
 
 class DashboardView(ListView):
@@ -105,7 +105,7 @@ class AddRouteView(TemplateView):
                 train_name = form.cleaned_data['train_name']
                 train_unit_price = form.cleaned_data['train_unit_price']
                 train_route_id = form.cleaned_data['train_route_id']
-                Train_route(route_id=route_id, train_route_id=train_route_id, train_name=train_name, train_unit_price=train_unit_price).save()
+                Train_route(route_id=route_id, train_route_id=train_route_id, name=train_name, unit_price=train_unit_price).save()
             else:
                 bus_id = 1 + max([bus['bus_route_id'] for bus in list(Bus_route.objects.all().values())])
                 Bus_route(route_id=route_id, bus_route_id=bus_id).save()
@@ -137,13 +137,23 @@ class AddTripView(TemplateView):
             Trip.objects.create(route_id=route_id, trip_index=trip_index)
             return redirect('/route/tableview')
         return render(request, self.template_name, context)
-    
+
+stopping_point = list(Stopping_point.objects.all().values())
+STOPPING_LIST = {}
+for stop in stopping_point:
+    STOPPING_LIST.update({stop['id']: str(stop['name']).upper()})
+
+
 class EditTripView(TemplateView):
     template_name = './route/edittrip.html'
+    trip_id = None
+    route_id = None
 
     def get(self, request):
-        trip_id = request.session['trip']
-        route_id = request.session['route_id']
+        EditTripView.trip_id = request.session['trip']
+        EditTripView.route_id = request.session['route_id']
+        route_id = EditTripView.route_id
+        trip_id = EditTripView.trip_id
         visit_list = list(Visit.objects.all().values())
         visit_list = [visit for visit in visit_list if visit['trip_route_id'] == str(route_id) and str(visit['trip_index']) == str(trip_id)]
         visit_list = sorted(visit_list, key=lambda x: x['visit_index'])
@@ -151,16 +161,35 @@ class EditTripView(TemplateView):
         for visit in visit_list:
             visit['departure_time'] = str(visit['departure_time']).upper()
             visit['arrival_time'] = str(visit['arrival_time']).upper()
+            visit['stopping_point_id'] = STOPPING_LIST[visit['stopping_point_id']]
 
         form = AddVisit()
         return render(request, self.template_name, {'visit_list' : visit_list,
-                        'route_id': route_id,
-                        'trip_index': str(trip_id),
+                        'route_id': EditTripView.route_id,
+                        'trip_index': str(EditTripView.trip_id),
+                        'index': len(visit_list) + 1,
                         'form': form})
 
     def post(self, request):
         form = AddVisit(request.POST or None)
         context = { 'form': form }
+        route_id = EditTripView.route_id
+        trip_index = EditTripView.trip_id
+        
+        context.update({'trip_index': trip_index})
+        context.update({'route_id': route_id})
+
+        visit_list = list(Visit.objects.all().values())
+        visit_list = [visit for visit in visit_list if visit['trip_route_id'] == str(route_id) and str(visit['trip_index']) == str(trip_index)]
+        visit_list = sorted(visit_list, key=lambda x: x['visit_index'])
+        
+        for visit in visit_list:
+            visit['departure_time'] = str(visit['departure_time']).upper()
+            visit['arrival_time'] = str(visit['arrival_time']).upper()
+        
+        context.update({"visit_list" : visit_list})
+        context.update({'index': len(visit_list) + 1})
+
         if form.is_valid():
             trip_index = form.cleaned_data['trip_index']
             context.update({'trip_index': trip_index})
@@ -184,10 +213,10 @@ class EditTripView(TemplateView):
                 visit['arrival_time'] = str(visit['arrival_time']).upper()
             
             context.update({"visit_list" : visit_list})
+            context.update({'index': len(visit_list) + 1})
             
             # Trip.objects.create(route_id=route_id, trip_index=trip_index)
             return render(request, self.template_name, context)
         else:
-            return redirect('/route/tableview')
-
+            return render(request, self.template_name, context)
 

@@ -96,10 +96,9 @@ class Stopping_point(models.Model):
         super(Stopping_point, self).save(*args, **kwargs)
 
 class Visit(models.Model):
-    uid = AutoField(primary_key=True)
     trip_route_id = models.CharField(max_length=256)
     trip_index = models.CharField(max_length=256)
-    stopping_point_id = models.CharField(max_length=256)
+    stopping_point_id = models.CharField(max_length=256, primary_key=True)
     visit_index = models.IntegerField()
     arrival_time = models.TimeField()
     departure_time = models.TimeField()
@@ -127,10 +126,10 @@ class Bus_route(models.Model):
         super(Bus_route, self).save(*args, **kwargs)
 
 class Train_route(models.Model):
-    train_route = models.CharField(primary_key=True, max_length=100)
+    train_route_id = models.CharField(primary_key=True, max_length=100)
     name = models.CharField(max_length=100)
     unit_price = models.FloatField()
-    route = models.ForeignKey(Route, to_field='route_id', on_delete=models.CASCADE)
+    route_id = models.CharField(max_length=100)
 
     def save(self, *args, **kwargs):
         super(Train_route, self).save(*args, **kwargs)

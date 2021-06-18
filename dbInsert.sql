@@ -111,6 +111,11 @@ values
 ('BT00002', 0, 'GL2', 'GL5', 'stop no 1980s', 'at 1980s'),
 ('BT00003', 0, 'GL5', 'GL8', 'stop no 1990s', 'at 1990s'),
 ('BT00004', 0, 'GL8', 'GL11', 'stop no 2000s', 'at 2000s'),
+('BT00005', 0, 'GL8', 'GL11', 'Tu Du', 'Quan 3'),
+('BT00006', 0, 'GL8', 'GL11', 'Bach Khoa', 'Distreet 10'),
+('BT00007', 0, 'GL8', 'GL11', 'Cho Ray', 'Distreet 3'),
+('BT00008', 0, 'GL8', 'GL11', 'Bach Khoa Campus Di An', 'Distreet Thu Duc'),
+('BT00009', 0, 'GL8', 'GL11', 'Independent Palace', 'Quan 1'),
 ('TT00001', 1, 'GL3', 'GL2', 'stop no 1989', 'at 1989'),
 ('TT00002', 1, 'GL2', 'GL4', 'stop no 1988', 'at 1988');
 
