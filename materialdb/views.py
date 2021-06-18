@@ -186,6 +186,7 @@ class EditTripView(TemplateView):
         for visit in visit_list:
             visit['departure_time'] = str(visit['departure_time']).upper()
             visit['arrival_time'] = str(visit['arrival_time']).upper()
+            visit['stopping_point_id'] = STOPPING_LIST[visit['stopping_point_id']]
         
         context.update({"visit_list" : visit_list})
         context.update({'index': len(visit_list) + 1})
@@ -202,7 +203,7 @@ class EditTripView(TemplateView):
             arrival_time = form.cleaned_data['arrival_time']
             departure_time = form.cleaned_data['departure_time']
 
-            visit = Visit(trip_route_id=route_id, trip_index=index,stopping_point_id=stopping_point_id, visit_index=index, arrival_time=arrival_time, departure_time=departure_time).save(force_insert=True)
+            visit = Visit(trip_route_id=route_id, trip_index=trip_index,stopping_point_id=stopping_point_id, visit_index=index, arrival_time=arrival_time, departure_time=departure_time).save(force_insert=True)
 
             visit_list = list(Visit.objects.all().values())
             visit_list = [visit for visit in visit_list if visit['trip_route_id'] == str(route_id) and str(visit['trip_index']) == str(trip_index)]

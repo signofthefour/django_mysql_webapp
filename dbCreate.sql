@@ -159,15 +159,7 @@ CREATE TABLE materialdb_Visit (
     `visit_index` INTEGER,
     `arrival_time` TIME,
     `departure_time` TIME,
-    PRIMARY KEY (`trip_route_id` , `trip_index` , `stopping_point_id`),
-
-    CONSTRAINT fk_visit_trip FOREIGN KEY(`trip_route_id` , `trip_index`)
-    REFERENCES materialdb_Trip(`route_id` , `trip_index`)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-
-    CONSTRAINT fk_visit_sp FOREIGN KEY (stopping_point_id)
-    REFERENCES materialdb_Stopping_point(id)
-    ON UPDATE CASCADE ON DELETE CASCADE
+    PRIMARY KEY (`trip_route_id` , `trip_index` , `stopping_point_id`)
 );
 
 CREATE TABLE materialdb_Ticket (
