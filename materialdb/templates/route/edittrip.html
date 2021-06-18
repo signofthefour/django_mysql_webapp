@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+      <nav class="navbar navbar-expand-lg navbar-transparent  navbar-absolute bg-primary fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="#pablo">BUS COMPANY</a>
+          </div>
+
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="panel-header panel-header-sm">
+      </div>
+      <div class="content">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title"> Table of Passenger</h4>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class=" text-primary">
+                      <th>
+                        Stopping point
+                      </th>
+                      <th>
+                        Visit Index
+                      </th>
+                      <th>
+                        Arrival Time
+                      </th>
+                      <th>
+                        Departure Time
+                      </th>
+                    </thead>
+                    <tbody>
+                      {% for visit in visit_list %}
+                        <tr>
+                          <td> {{visit.stopping_point_id}} </td>
+                          <td> {{visit.visit_index}} </td>
+                          <td> {{visit.arrival_time}} </td>
+                          <td> {{visit.departure_time}} </td>
+                        </tr>
+                      {%endfor%}
+                    </tbody>
+                  </table>
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStop" style="float: right;" >
+                  Add stopping point
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+<div class="modal fade" id="addStop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% csrf_token %}
+      <div class="modal-body">
+        <div class="table">
+          {{form.as_table}}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+          {% endblock %}
+

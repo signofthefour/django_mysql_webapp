@@ -123,5 +123,6 @@ SITE_ID = 1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
+
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/user/tableview'

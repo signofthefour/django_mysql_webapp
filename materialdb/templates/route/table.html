@@ -57,30 +57,38 @@
                         <tr>
                           <td>{{ entry.route_id }}</td>
                           <td>
-                            <ul>
-                            {% csrf_token %}
-                            {% for trip in entry.trip_index %}
-                            <li> {{trip}} </li>
-                            {% endfor %}
-                            </ul>
+                            <table>
+                              {% csrf_token %}
+                              {% for trip in entry.trip_index %}
+                              <tr>
+                              <td>
+                              Trip ID: 
+                              </td>
+                              <td>
+                              <form method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="editTripEntry" value="{{ trip }}, {{entry.route_id}}" rel="tooltip" class="btn btn-info btn-round" data-original-title="Edit">
+                                {{entry.route_id}} - {{trip}}
+                                </button>
+                              </form>
+                              </td>
+                              </tr>
+                              {% endfor %}
+                            </table>
                           </td>
                           <td class="td-actions text-right">
                           
                           <form method="post">
                           {% csrf_token %}
-
+                          
                           <button type="submit" name="editEntry" value="
-                          {{ entry.passenger_id }},
-                          {{ entry.ssn }},
-                          {{ entry.job }},
-                          {{ entry.sex }},
-                          {{ entry.email }},
-                          {{ entry.dob }} "
+                          {{ entry.route_id }},
+                          {{ entry.trip_index }}"
                           rel="tooltip" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral " data-original-title="Edit">
-                            <i class="now-ui-icons ui-2_settings-90"></i></button>
+                            <i class="now-ui-icons shopping_delivery-fast"></i></button>
 
                           <button type="submit" name="deleteEntry" value="{{ entry.id }}" rel="tooltip" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral " data-original-title="Remove">
-                            <i class="now-ui-icons ui-1_simple-remove"></i></button>
+                          </button>
                           </form>
                         </td>
                         </tr>

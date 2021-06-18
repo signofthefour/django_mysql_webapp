@@ -77,7 +77,7 @@ class Trip(models.Model):
         unique_together = (("trip_index", "route_id"),)
 
     def save(self, *args, **kwargs):
-        super(Route, self).save(*args, **kwargs)
+        super(Trip, self).save(*args, **kwargs)
 
 class Stopping_point(models.Model):
     id = models.CharField(primary_key=True, max_length=256)

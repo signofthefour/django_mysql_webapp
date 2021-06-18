@@ -1,8 +1,11 @@
+from django import forms
+from django.http.request import HttpRequest
 from django.shortcuts import render, redirect
+from django.urls.conf import path
 from django.views.generic import TemplateView, ListView
 from django.template import RequestContext
 from .models import *
-from materialdb.forms import AddRoute, AddTrip
+from materialdb.forms import AddRoute, AddTrip, AddVisit
 
 
 class DashboardView(ListView):
@@ -48,9 +51,9 @@ class RouteTableView(ListView):
     def get_queryset(self):
         trip_list = list(Trip.objects.all().values())
         route_list = list(Route.objects.all().values())
-        stopping_point_list = list(Stopping_point.objects.all().values())
-        visit_list = list(Visit.objects.all().values())
-        distance_list = list(Distance.objects.all().values())
+        # stopping_point_list = list(Stopping_point.objects.all().values())
+        # visit_list = list(Visit.objects.all().values())
+        # distance_list = list(Distance.objects.all().values())
 
         context = list(map(lambda route: {'route_id': route['route_id'], 'trip_index': []}, route_list))
         for trip in trip_list:
@@ -60,29 +63,25 @@ class RouteTableView(ListView):
         return context
 
     def post(self, request):
-        form = Passenger(request.POST or None)
+        form = (request.POST or None)
 
         context = { 'form': form }
 
-        if 'deleteEntry' in request.POST:
-            id_num = request.POST['deleteEntry']
-            Passenger.objects.filter(passenger_id=id_num).delete()
-
-            return redirect('/user/tableview')
+        if 'editTripEntry' in request.POST:
+            values = request.POST['editTripEntry']
+            values = values.split(',')
+            request.session['route_id'] = str(values[1]).strip()
+            request.session['trip'] = str(values[0]).strip()
+            return redirect('/route/edittrip', 
+                    EditTripView.as_view(), 
+                    {})
 
         elif 'editEntry' in request.POST:
-
             values = request.POST['editEntry']
             values = values.split(',')
-            request.session['id'] = values[0]
-            request.session['ssn'] = values[1]
-            request.session['job'] = values[2]
-            request.session['sex'] = values[3]
-            request.session['email'] = values[4]
-            request.session['dob'] = values[5]
-
-
-            return redirect('route/edit')
+            request.session['route_id'] = values[0]
+            request.session['trip'] = values[1]
+            return redirect('/route/addtrip', AddTripView.as_view(), {'route_id': values[0], 'trip': values[1]})
 
 class AddRouteView(TemplateView):
     template_name = './route/addroute.html'
@@ -114,37 +113,63 @@ class AddRouteView(TemplateView):
 
         return render(request, self.template_name, context)
 
-class EditIntersectionView(TemplateView):
-    template_name = './route/edit.html'
+class AddTripView(TemplateView):
+    template_name = './route/addtrip.html'
 
     def get(self, request):
-        passenger = Passenger()
-        return render(request, self.template_name, {'form':[passenger]})
+        trip = AddTrip()
+        trip.route_id=request.session['route_id']
+        return render(request, self.template_name, {'form':trip, 
+                    'route_id': request.session['route_id'], 
+                    'trip': request.session['trip']
+                    })
 
     def post(self, request):
-        form = Passenger(request.POST or None)
+        form = AddTrip(request.POST or None)
         context = { 'form': form }
         if form.is_valid():
+            trip_index = form.cleaned_data['trip_index']
+            context.update({'trip_index': trip_index})
 
-            id = form.cleaned_data['id']
-            context.update({'id': id})
-
-            ssn = form.cleaned_data['ssn']
-            context.update({'ssn': ssn})
-
-            job = form.cleaned_data['job']
-            context.update({'job': job})
-
-            sex = form.cleaned_data['sex']
-            context.update({'sex': sex})
-
-            email = form.cleaned_data['email']
-            context.update({'email': email})
-
-            dob = form.cleaned_data['dob']
-            context.update({'dob': dob})
-
-            passenger= Passenger.objects.create_user(passenger_id=id, ssn=ssn, job=job, sex=sex, email=email, dob=dob)
-
+            route_id = form.cleaned_data['route_id']
+            context.update({'route_id': route_id})
+            
+            Trip.objects.create(route_id=route_id, trip_index=trip_index)
             return redirect('/route/tableview')
         return render(request, self.template_name, context)
+    
+class EditTripView(TemplateView):
+    template_name = './route/edittrip.html'
+
+    def get(self, request):
+        trip_id = request.session['trip']
+        route_id = request.session['route_id']
+        visit_list = list(Visit.objects.all().values())
+        visit_list = [visit for visit in visit_list if visit['trip_route_id'] == str(route_id) and str(visit['trip_index']) == str(trip_id)]
+        visit_list = sorted(visit_list, key=lambda x: x['visit_index'])
+        
+        for visit in visit_list:
+            visit['departure_time'] = str(visit['departure_time']).upper()
+            visit['arrival_time'] = str(visit['arrival_time']).upper()
+
+        form = AddVisit()
+        return render(request, self.template_name, {'visit_list' : visit_list,
+                        'route_id': route_id,
+                        'trip_index': trip_id,
+                        'form': form})
+
+    def post(self, request):
+        form = AddTrip(request.POST or None)
+        context = { 'form': form }
+        if form.is_valid():
+            trip_index = form.cleaned_data['trip_index']
+            context.update({'trip_index': trip_index})
+
+            route_id = form.cleaned_data['route_id']
+            context.update({'route_id': route_id})
+            
+            Trip.objects.create(route_id=route_id, trip_index=trip_index)
+            return redirect('/route/tableview')
+        return render(request, self.template_name, context)
+
+

@@ -10,5 +10,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('user/tableview', views.UserTableView.as_view()),
     url('route/tableview', views.RouteTableView.as_view()),
+    url('route/addtrip', views.AddTripView.as_view()),
+    url('route/edittrip', views.EditTripView.as_view()),
     url('route/add', views.AddRouteView.as_view()),
 ]

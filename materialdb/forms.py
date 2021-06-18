@@ -1,3 +1,5 @@
+from django.db import router
+from materialdb.models import Route, Stopping_point, Trip
 from django import forms
 from django.forms.widgets import ChoiceWidget
 
@@ -7,7 +9,22 @@ class AddIntersection(forms.Form):
     lat = forms.FloatField()
 
 class AddTrip(forms.Form):
+    route_id = forms.CharField(label='Route Index ', max_length=100, required=False)
     trip_index = forms.CharField(label='Trip Index: ', max_length=100, required=True)
+
+    def clean(self):
+        cleaned_data = super(forms.Form, self).clean()
+        trip_idx_list = [(trip['trip_index'], trip['route_id'] )for trip in list(Trip.objects.all().values())]
+        trip_index = cleaned_data.get("trip_index")
+        route_id = cleaned_data.get("route_id")
+        print(trip_idx_list)
+        for trip in trip_idx_list:
+            if str(trip[0]) == str(trip_index) and str(trip[1]) == str(route_id):
+                raise forms.ValidationError("Trip index already exist, suggest index: {}".format(max([trip[0] for trip in trip_idx_list]) + 1))
+
+        return cleaned_data
+        
+
 
 class AddRoute(forms.Form):
     # forms.ChoiceField(label='Type', choices=['B', 'T'])
@@ -35,4 +52,25 @@ class AddRoute(forms.Form):
 
         return cleaned_data
 
+stopping_point = list(Stopping_point.objects.all().values())
+
+STOPPING_LIST = [(str(stop['name'] + ' at ' + stop['address'] + ": " + ("TRAIN" if stop['type'] else "BUS")), stop['id']) for stop in stopping_point]
+
+class AddVisit(forms.Form):
+    route_id = forms.CharField(label='Route ID: ', max_length=4)
+    trip_index = forms.IntegerField(label='Trip Index: ')
+    stopping_point_id = forms.ChoiceField(label='Stopping point', choices=STOPPING_LIST, required=True)
+    index = forms.IntegerField(label='At Index', required=True)
+    arrival_time = forms.TimeField(label='Arrive at', required=True)
+    departure_time = forms.TimeField(label='Depart at', required=True)
+
+    def clean(self):
+        cleaned_data = super(forms.Form, self).clean()
+        route_id = cleaned_data.get("route_id")
+        trip_index = cleaned_data.get("trip_index")
+        stopping_point = cleaned_data.get("stopping_point_id")
+        arrival_time = cleaned_data.get("arrival_time")
+        departure_time = cleaned_data.get("departure_time")
+
+        return cleaned_data
     
