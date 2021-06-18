@@ -1,7 +1,7 @@
 from enum import unique
 from django.db import models
 from django.db.models import constraints
-from django.db.models.fields import FloatField, related
+from django.db.models.fields import CharField, FloatField, related
 from compositefk.fields import CompositeForeignKey
 
 class PassengerManager(models.Manager):
@@ -114,3 +114,20 @@ class Visit(models.Model):
 
     def save(self, *args, **kwargs):
         super(Visit, self).save(*args, **kwargs)
+
+
+class Bus_route(models.Model):
+    bus_route_id = models.CharField(primary_key=True, max_length=100)
+    route = models.ForeignKey(Route, to_field='route_id', on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        super(Bus_route, self).save(*args, **kwargs)
+
+class Train_route(models.Model):
+    train_route = models.CharField(primary_key=True, max_length=100)
+    name = models.CharField(max_length=100)
+    unit_price = models.FloatField()
+    route = models.ForeignKey(Route, to_field='route_id', on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        super(Train_route, self).save(*args, **kwargs)
