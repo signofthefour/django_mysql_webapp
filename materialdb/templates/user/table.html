@@ -58,10 +58,10 @@
                           <td>{{ entry.email }} </td>
                           <td>{{ entry.dob }} </td>
                           <td class="td-actions text-right">
-                            <form method="post">
+                          {% comment %} <form method="post">
                           {% csrf_token %}
 
-                          {% comment %} <button type="submit" name="editEntry" value="
+                          <button type="submit" name="editEntry" value="
                           {{ entry.passenger_id }},
                           {{ entry.ssn }},
                           {{ entry.job }},
@@ -72,8 +72,8 @@
                             <i class="now-ui-icons ui-2_settings-90"></i></button>
 
                           <button type="submit" name="deleteEntry" value="{{ entry.id }}" rel="tooltip" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral " data-original-title="Remove">
-                            <i class="now-ui-icons ui-1_simple-remove"></i></button> {% endcomment %}
-                          </form>
+                            <i class="now-ui-icons ui-1_simple-remove"></i></button>
+                          </form> {% endcomment %}
                         </td>
                         </tr>
                       {% endfor %}

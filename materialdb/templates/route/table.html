@@ -20,45 +20,53 @@
       </div>
       <div class="content">
         <div class="row">
+          <div class="col-md-15">
+            <div class="card">
+              <div class="container-fluid">
+                <div class="navbar-toggle">
+                  <button type="button" class="navbar-toggler">
+                    <a href="/route/edit">
+                      <i class="now-ui-icons ui-1_simple-add"></i>
+                      <p>Add new Route</p>
+                    </a>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title"> Table of Passenger</h4>
+                <h4 class="card-title"> Table of Route</h4>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
                   <table class="table">
                     <thead class=" text-primary">
                       <th>
-                        ID
+                        Route ID
                       </th>
                       <th>
-                        Social Sercurity Number
-                      </th>
-                      <th>
-                        Job
-                      </th>
-                      <th>
-                        Sex
-                      </th>
-                      <th>
-                        Email
-                      </th>
-                      <th>
-                        Date of Birth
+                        Trips
                       </th>
                     </thead>
                     <tbody>
                       {% for entry in object_list %}
                         <tr>
-                          <td>{{ entry.passenger_id }}</td>
-                          <td>{{ entry.ssn }}</td>
-                          <td>{{ entry.job }} </td>
-                          <td>{{ entry.sex }} </td>
-                          <td>{{ entry.email }} </td>
-                          <td>{{ entry.dob }} </td>
+                          <td>{{ entry.route_id }}</td>
+                          <td>
+                            <ul>
+                            {% csrf_token %}
+                            {% for trip in entry.trip_index %}
+                            <li> {{trip}} </li>
+                            {% endfor %}
+                            </ul>
+                          </td>
                           <td class="td-actions text-right">
-                            <form method="post">
+                          
+                          <form method="post">
                           {% csrf_token %}
 
                           <button type="submit" name="editEntry" value="

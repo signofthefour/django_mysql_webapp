@@ -43,15 +43,21 @@ class UserTableView(ListView):
             return redirect('route/edit')
 
 class RouteTableView(ListView):
-    template_name = './user/table.html'
-
+    template_name = './route/table.html'
+            
     def get_queryset(self):
-        print(list(Trip.objects.all().values()))
-        print(list(Route.objects.all().values()))
-        print(list(Stopping_point.objects.all().values()))
-        print(list(Visit.objects.all().values()))
-        print(list(Distance.objects.all().values()))
-        return Passenger.objects.all()
+        trip_list = list(Trip.objects.all().values())
+        route_list = list(Route.objects.all().values())
+        stopping_point_list = list(Stopping_point.objects.all().values())
+        visit_list = list(Visit.objects.all().values())
+        distance_list = list(Distance.objects.all().values())
+        print(route_list)
+        context = list(map(lambda route: {'route_id': route['route_id'], 'trip_index': []}, route_list))
+        for trip in trip_list:
+            for c in context:
+                if trip['route_id'] == c['route_id']:
+                    c['trip_index'].append(trip['trip_index'])
+        return context
 
     def post(self, request):
         form = Passenger(request.POST or None)
@@ -78,7 +84,7 @@ class RouteTableView(ListView):
 
             return redirect('route/edit')
 
-class addIntersectionView(TemplateView):
+class AddRouteView(TemplateView):
     template_name = 'addperson.html'
 
     def get(self, request):

@@ -74,6 +74,11 @@
   <script src="{% static 'js/plugins/bootstrap-notify.js' %}"></script>
   <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static 'js/now-ui-dashboard.min.js' %}" type="text/javascript"></script>
+  <script>
+    $('#toggle').click(function() {
+      $('form').toggle('slow');
+    });
+  </script>
 
 </body>
 
