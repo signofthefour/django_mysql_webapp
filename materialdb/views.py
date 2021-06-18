@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, ListView
 from django.template import RequestContext
-from .models import Passenger
+from .models import *
 from materialdb.forms import AddIntersection
 
 
@@ -11,10 +11,46 @@ class DashboardView(ListView):
     def get_queryset(self):
         return Passenger.objects.all()
 
+class UserTableView(ListView):
+    template_name = './user/table.html'
+
+    def get_queryset(self):
+        return Passenger.objects.all()
+
+    def post(self, request):
+        form = Passenger(request.POST or None)
+
+        context = { 'form': form }
+
+        if 'deleteEntry' in request.POST:
+            id_num = request.POST['deleteEntry']
+            Passenger.objects.filter(passenger_id=id_num).delete()
+
+            return redirect('/user/tableview')
+
+        elif 'editEntry' in request.POST:
+
+            values = request.POST['editEntry']
+            values = values.split(',')
+            request.session['id'] = values[0]
+            request.session['ssn'] = values[1]
+            request.session['job'] = values[2]
+            request.session['sex'] = values[3]
+            request.session['email'] = values[4]
+            request.session['dob'] = values[5]
+
+
+            return redirect('route/edit')
+
 class RouteTableView(ListView):
     template_name = './user/table.html'
 
     def get_queryset(self):
+        print(list(Trip.objects.all().values()))
+        print(list(Route.objects.all().values()))
+        print(list(Stopping_point.objects.all().values()))
+        print(list(Visit.objects.all().values()))
+        print(list(Distance.objects.all().values()))
         return Passenger.objects.all()
 
     def post(self, request):

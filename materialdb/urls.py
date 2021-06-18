@@ -8,7 +8,7 @@ urlpatterns = [
     path('', lambda req: redirect('/accounts/login')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('user/tableview', views.RouteTableView.as_view()),
-    url('route/adduser', views.addIntersectionView.as_view()),
+    path('user/tableview', views.UserTableView.as_view()),
+    url('route/tableview', views.RouteTableView.as_view()),
     url('route/edit', views.EditIntersectionView.as_view()),
 ]
