@@ -66,23 +66,58 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">New Stopping Point</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       {% csrf_token %}
+      <form method="post">
       <div class="modal-body">
         <div class="table">
-          {{form.as_table}}
+          <table>
+            <tbody>
+            <tr>
+            {% csrf_token %}
+              <td>{{form.route_id.label}}</td>
+              <td> <input name="route_id" value="{{route_id}}" readonly> </input></td>
+            </tr>
+            <tr>
+            {% csrf_token %}
+              <td>{{form.trip_index.label}}</td>
+              <td> <input name="trip_index" value="{{trip_index}}" readonly> </input></td>
+            </tr>
+            <tr>
+            {% csrf_token %}
+              <td>{{form.stopping_point_id.label}}</td>
+              <td>{{form.stopping_point_id}}</td>
+            </tr>
+            <tr>
+            {% csrf_token %}
+              <td>{{form.index.label}}</td>
+              <td>{{form.index}}</td>
+            </tr>
+            <tr>
+            {% csrf_token %}
+              <td>{{form.arrival_time.label}}</td>
+              <td><input type="time" id="appt" name="arrival_time" min="04:00" max="18:00" required></td>
+            </tr>
+            <tr>
+            {% csrf_token %}
+              <td>{{form.departure_time.label}}</td>
+              <td><input type="time" id="appt" name="departure_time" min="04:00" max="18:00" required></td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
       </div>
+      </form>
     </div>
   </div>
 </div>
-          {% endblock %}
+{% endblock %}
 

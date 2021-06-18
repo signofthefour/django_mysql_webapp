@@ -155,11 +155,11 @@ class EditTripView(TemplateView):
         form = AddVisit()
         return render(request, self.template_name, {'visit_list' : visit_list,
                         'route_id': route_id,
-                        'trip_index': trip_id,
+                        'trip_index': str(trip_id),
                         'form': form})
 
     def post(self, request):
-        form = AddTrip(request.POST or None)
+        form = AddVisit(request.POST or None)
         context = { 'form': form }
         if form.is_valid():
             trip_index = form.cleaned_data['trip_index']
@@ -167,9 +167,27 @@ class EditTripView(TemplateView):
 
             route_id = form.cleaned_data['route_id']
             context.update({'route_id': route_id})
+
+            stopping_point_id = form.cleaned_data['stopping_point_id']
+            index = form.cleaned_data['index']
+            arrival_time = form.cleaned_data['arrival_time']
+            departure_time = form.cleaned_data['departure_time']
+
+            visit = Visit(trip_route_id=route_id, trip_index=index,stopping_point_id=stopping_point_id, visit_index=index, arrival_time=arrival_time, departure_time=departure_time).save(force_insert=True)
+
+            visit_list = list(Visit.objects.all().values())
+            visit_list = [visit for visit in visit_list if visit['trip_route_id'] == str(route_id) and str(visit['trip_index']) == str(trip_index)]
+            visit_list = sorted(visit_list, key=lambda x: x['visit_index'])
             
-            Trip.objects.create(route_id=route_id, trip_index=trip_index)
+            for visit in visit_list:
+                visit['departure_time'] = str(visit['departure_time']).upper()
+                visit['arrival_time'] = str(visit['arrival_time']).upper()
+            
+            context.update({"visit_list" : visit_list})
+            
+            # Trip.objects.create(route_id=route_id, trip_index=trip_index)
+            return render(request, self.template_name, context)
+        else:
             return redirect('/route/tableview')
-        return render(request, self.template_name, context)
 
 

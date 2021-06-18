@@ -1,7 +1,8 @@
 from enum import unique
+from logging import FATAL
 from django.db import models
 from django.db.models import constraints
-from django.db.models.fields import CharField, FloatField, related
+from django.db.models.fields import AutoField, CharField, FloatField, related
 from compositefk.fields import CompositeForeignKey
 
 class PassengerManager(models.Manager):
@@ -95,9 +96,10 @@ class Stopping_point(models.Model):
         super(Stopping_point, self).save(*args, **kwargs)
 
 class Visit(models.Model):
+    uid = AutoField(primary_key=True)
     trip_route_id = models.CharField(max_length=256)
     trip_index = models.CharField(max_length=256)
-    stopping_point = models.ForeignKey(Stopping_point, to_field='id', on_delete=models.CASCADE, primary_key=True)
+    stopping_point_id = models.CharField(max_length=256)
     visit_index = models.IntegerField()
     arrival_time = models.TimeField()
     departure_time = models.TimeField()
@@ -106,6 +108,7 @@ class Visit(models.Model):
         "route_id": "trip_route_id",
         "trip_index": "trip_index"
     })
+
 
     def __str__(self):
         return "{} {} {} {} {} {}".format(self.trip_route_id, self.trip_index, self.stopping_point_id,

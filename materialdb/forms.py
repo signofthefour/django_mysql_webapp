@@ -54,14 +54,14 @@ class AddRoute(forms.Form):
 
 stopping_point = list(Stopping_point.objects.all().values())
 
-STOPPING_LIST = [(str(stop['name'] + ' at ' + stop['address'] + ": " + ("TRAIN" if stop['type'] else "BUS")), stop['id']) for stop in stopping_point]
+STOPPING_LIST = [(stop['id'], str(stop['name']).upper() + ' at ' + str(stop['address']).upper() + " for " + ("TRAIN" if stop['type'] else "BUS")) for stop in stopping_point]
 
 class AddVisit(forms.Form):
     route_id = forms.CharField(label='Route ID: ', max_length=4)
     trip_index = forms.IntegerField(label='Trip Index: ')
     stopping_point_id = forms.ChoiceField(label='Stopping point', choices=STOPPING_LIST, required=True)
     index = forms.IntegerField(label='At Index', required=True)
-    arrival_time = forms.TimeField(label='Arrive at', required=True)
+    arrival_time = forms.TimeField(label='Arrive at', required=True )
     departure_time = forms.TimeField(label='Depart at', required=True)
 
     def clean(self):
@@ -71,6 +71,13 @@ class AddVisit(forms.Form):
         stopping_point = cleaned_data.get("stopping_point_id")
         arrival_time = cleaned_data.get("arrival_time")
         departure_time = cleaned_data.get("departure_time")
+
+        if not stopping_point:
+            raise forms.ValidationError("Please choose stopping_point")
+        if not arrival_time:
+            raise forms.ValidationError("Please fill arrival time")
+        if not departure_time:
+            raise forms.ValidationError("Please fill departure time")
 
         return cleaned_data
     
