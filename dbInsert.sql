@@ -1,7 +1,7 @@
 -- use testing;
 use transportation;
 show tables;
-
+drop trigger if exists update_ticket_price;
 -- // Clear all tables
 drop procedure if exists ClearAll;
 delimiter $$
@@ -14,18 +14,21 @@ begin
 		delete from materialdb_Intersection;
 		delete from materialdb_Street;
         delete from materialdb_Stopping_point;
-        delete from materialdb_Ticket;
         delete from materialdb_Bus_route;
         delete from materialdb_Train_route;
         delete from materialdb_Trip;
         delete from materialdb_Visit;
+        delete from materialdb_Monthly_ticket_record;
+        delete from materialdb_Oneday_ticket_record;
         delete from materialdb_Regular_ticket;
         delete from materialdb_Monthly_ticket;
         delete from materialdb_Oneday_ticket;
-        delete from materialdb_Monthly_ticket_record;
-        delete from materialdb_Oneday_ticket_record;
+		delete from materialdb_Ticket;
         delete from materialdb_User;
-        
+        delete from materialdb_Magnetic_card;
+        delete from materialdb_Passenger;
+        delete from materialdb_Staff;
+        delete from materialdb_Workplace;
 		set foreign_key_checks = 1;
 	set sql_safe_updates = 1;
 
@@ -37,6 +40,8 @@ delimiter ;
 call ClearAll();
 
 INSERT INTO `TRANSPORTATION`.`materialdb_User` (`user_name`, `password`) VALUES ('sManager', '123456789');
+-- price list
+insert into materialdb_Price_list values('5','30000','40000');
 
 -- // 1.intersection ---------------------- 
 insert into materialdb_intersection(`long`, lat)
@@ -304,7 +309,7 @@ INSERT INTO materialdb_Oneday_ticket_record
 		route_id = ( SELECT route_id FROM materialdb_Route ORDER BY RAND() LIMIT 1),
         enter_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
         leave_point_id = ( SELECT id FROM materialdb_Stopping_point ORDER BY RAND() LIMIT 1),
-        enter_time = time('18:00:00'),
+        enter_time = time('19:00:00'),
         leave_time = time('21:00:00');
 
 INSERT INTO materialdb_Oneday_ticket_record
@@ -380,7 +385,3 @@ insert into materialdb_Workplace values('NV0001','BT00002');
 insert into materialdb_Workplace values('NV0003','BT00004');
 -- select* from materialdb_Workplace
 
--- price list
--- alter table materialdb_Price_list
--- nocheck constraint all
-insert into materialdb_Price_list values('5','30000','40000');

@@ -41,7 +41,10 @@ UNION ALL
 	WHERE route_id = myRoute AND _ticket.use_date IS NOT NULL
 	GROUP BY use_date
 )) total
-GROUP BY total.use_date;
+WHERE 	use_date >= fromDate
+AND		use_date <= toDate
+GROUP BY total.use_date
+ORDER BY total.use_date;
 END$$
 DELIMITER ;
 
@@ -49,5 +52,5 @@ DELIMITER ;
 
 set @myRoute 	= 'T150';
 set @fromDate 	= date('2021-04-12');
-set @toDate 	= date('2021-04-21');
+set @toDate 	= date('2021-06-12');
 CALL ThongKeLuotNguoi(@myRoute, @fromDate, @toDate)
