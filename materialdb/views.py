@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, ListView
 from django.template import RequestContext
 from .models import *
-from materialdb.forms import AddIntersection
+from materialdb.forms import AddRoute, AddTrip
 
 
 class DashboardView(ListView):
@@ -51,7 +51,7 @@ class RouteTableView(ListView):
         stopping_point_list = list(Stopping_point.objects.all().values())
         visit_list = list(Visit.objects.all().values())
         distance_list = list(Distance.objects.all().values())
-        print(route_list)
+
         context = list(map(lambda route: {'route_id': route['route_id'], 'trip_index': []}, route_list))
         for trip in trip_list:
             for c in context:
@@ -85,37 +85,32 @@ class RouteTableView(ListView):
             return redirect('route/edit')
 
 class AddRouteView(TemplateView):
-    template_name = 'addperson.html'
+    template_name = './route/addroute.html'
 
     def get(self, request):
-        form = AddIntersection()
-        return render(request, self.template_name, {'form':form})
+        form = AddRoute()
+        trip = AddTrip()
+        return render(request, self.template_name, {'form':form, 'trip_form': trip})
 
     def post(self, request):
-        form = AddIntersection(request.POST or None)
-
+        form = AddRoute(request.POST or None)
         context = { 'form': form }
         if form.is_valid():
-            id = form.cleaned_data['id']
-            context.update({'id': id})
+            route_id = form.cleaned_data['route_id_type'] + form.cleaned_data['route_id_num']
+            context.update({'route_id': route_id})
 
-            ssn = form.cleaned_data['ssn']
-            context.update({'ssn': ssn})
+            # Create route
+            Route(route_id).save()
 
-            job = form.cleaned_data['job']
-            context.update({'job': job})
-
-            sex = form.cleaned_data['sex']
-            context.update({'sex': sex})
-
-            email = form.cleaned_data['email']
-            context.update({'email': email})
-
-            dob = form.cleaned_data['dob']
-            context.update({'dob': dob})
-
-            Passenger.objects.create_user(passenger_id=id, ssn=ssn, job=job, sex=sex, email=email, dob=dob)
-            return redirect('/route/table')
+            if form.cleaned_data['route_id_type'] == 'T':
+                train_name = form.cleaned_data['train_name']
+                train_unit_price = form.cleaned_data['train_unit_price']
+                train_route_id = form.cleaned_data['train_route_id']
+                Train_route(route_id=route_id, train_route_id=train_route_id, train_name=train_name, train_unit_price=train_unit_price).save()
+            else:
+                bus_id = 1 + max([bus['bus_route_id'] for bus in list(Bus_route.objects.all().values())])
+                Bus_route(route_id=route_id, bus_route_id=bus_id).save()
+            return redirect('/route/tableview')
 
         return render(request, self.template_name, context)
 
