@@ -131,11 +131,13 @@ values
 ('T008', 1, 'TT00002', 2, '063000', '063300');
 
 -- passenger
-insert into materialdb_Passenger values('HK000001','235142685','teacher','0145623574','M','scott@yahoo.com','1998-02-04');
-insert into materialdb_Passenger values('HK000002','325487516','doctor','0159852346','F','jenny@yahoo.com','1986-01-08');
-insert into materialdb_Passenger values('HK000003','258963147','farmer','0254654125','M','tonny@yahoo.com','2000-06-02');
-insert into materialdb_Passenger values('HK000004','963357159','nurse','0325478965','F','elena@yahoo.com','1991-05-07');
-insert into materialdb_Passenger values('HK000005','344951373','student','0344951373','M','phuc@yahoo.com','2001-05-07');
+insert into materialdb_Passenger(passenger_id, ssn, job, phone, sex, email, dob)
+ values
+('HK000001','235142685','teacher','0145623574','M','scott@yahoo.com','1998-02-04'),
+('HK000002','325487516','doctor','0159852346','F','jenny@yahoo.com','1986-01-08'),
+('HK000003','258963147','farmer','0254654125','M','tonny@yahoo.com','2000-06-02'),
+('HK000004','963357159','nurse','0325478965','F','elena@yahoo.com','1991-05-07'),
+('HK000005','344951373','student','0344951373','M','phuc@yahoo.com','2001-05-07');
 
 -- 10. ticket --
 insert into materialdb_Ticket(ticket_id, `type`, price, purchase_date, customer_id)
@@ -382,23 +384,33 @@ INSERT INTO materialdb_Oneday_ticket_record
         enter_time = time('12:00:00'),
         leave_time = time('13:00:00');
 
--- 16 TO 20 --
 
 -- magnatic card
-insert into materialdb_Magnetic_card values('TT000001',NOW(),'HK000003');
-insert into materialdb_Magnetic_card values('TT000002',NOW(),'HK000004');
-insert into materialdb_Magnetic_card values('TT000003',NOW(),'HK000002');
-insert into materialdb_Magnetic_card values('TT000004',NOW(),'HK000001');
-insert into materialdb_Magnetic_card values('TT000005',NOW(),'HK000005');
+insert into materialdb_Magnetic_card(magnatic_card_id, purchase_date, passenger_id)
+values
+('TT000001',NOW(),'HK000003'),
+('TT000002',NOW(),'HK000004'),
+('TT000003',NOW(),'HK000002'),
+('TT000004',NOW(),'HK000001'),
+('TT000005',NOW(),'HK000005');
 
 -- staff
-insert into materialdb_Staff values('NV0001','engineer','1975-09-08','john@gmail.com','M','0354682975','7');
-insert into materialdb_Staff values('NV0002','manager','1982-12-12','alex@gmail.com','M','0021354752','2');
-insert into materialdb_Staff values('NV0003','ticket seller','1999-05-02','jenifer@gmail.com','F','0213456258','5');
-insert into materialdb_Staff values('NV0004','security guard','2000-11-10','david@gmail.com','M','0327894124','1');
+insert into materialdb_Staff (staff_id, job_category, dob, email, sex, mobile_phone, internal_phone)
+ values
+('NV0001','engineer','1975-09-08','john@gmail.com','M','0354682975','7'),
+('NV0002','manager','1982-12-12','alex@gmail.com','M','0021354752','2'),
+('NV0003','ticket seller','1999-05-02','jenifer@gmail.com','F','0213456258','5'),
+('NV0004','security guard','2000-11-10','david@gmail.com','M','0327894124','1');
 
 -- workplace
-insert into materialdb_Workplace values('NV0002','BT00001');
-insert into materialdb_Workplace values('NV0004','BT00003');
-insert into materialdb_Workplace values('NV0001','BT00002');
-insert into materialdb_Workplace values('NV0003','BT00004');
+insert into materialdb_Workplace(staff_id, station_id)
+ values
+('NV0002','BT00001'),
+('NV0004','BT00003'),
+('NV0001','BT00002'),
+('NV0003','BT00004');
+
+--price list
+insert into materialdb_Price_list(bus_unit_price, week_day_price, weekend_price)
+ values('5','30000','40000');
+
