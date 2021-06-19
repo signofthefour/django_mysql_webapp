@@ -47,8 +47,10 @@ class Street(models.Model):
 
 class Distance(models.Model):
     street = models.ForeignKey(Street, to_field='id', on_delete=models.CASCADE, primary_key=True)
-    first_int = models.ForeignKey(Intersection, to_field='id',on_delete=models.CASCADE, related_name='distance_first_int', primary_key=False)
-    second_int = models.ForeignKey(Intersection, to_field='id', on_delete=models.CASCADE, related_name='distance_second_int', primary_key=False)
+    first_int = models.ForeignKey(Intersection, to_field='id',
+                    on_delete=models.CASCADE, related_name='distance_first_int', primary_key=False)
+    second_int = models.ForeignKey(Intersection, to_field='id', 
+                    on_delete=models.CASCADE, related_name='distance_second_int', primary_key=False)
 
     length = models.FloatField()
     dist_index = models.IntegerField()
