@@ -410,7 +410,7 @@ insert into materialdb_Workplace(staff_id, station_id)
 ('NV0001','BT00002'),
 ('NV0003','BT00004');
 
---pricelist
+-- pricelist
 insert into materialdb_Price_list(bus_unit_price, week_day_price, weekend_price)
  values('5','30000','40000');
 
