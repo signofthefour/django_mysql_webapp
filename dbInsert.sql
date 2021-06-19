@@ -386,7 +386,7 @@ INSERT INTO materialdb_Oneday_ticket_record
 
 
 -- magnatic card
-insert into materialdb_Magnetic_card(magnatic_card_id, purchase_date, passenger_id)
+insert into materialdb_Magnetic_card(magnetic_card_id, purchase_date, passenger_id)
 values
 ('TT000001',NOW(),'HK000003'),
 ('TT000002',NOW(),'HK000004'),
