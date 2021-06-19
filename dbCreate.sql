@@ -250,7 +250,7 @@ dob	date
 
 create table materialdb_Magnetic_card
 (
-magnatic_card_id	char(8) primary key,
+magnetic_card_id	char(8) primary key,
 purchase_date	datetime,
 passenger_id	char(8),
 constraint	fk_magnetic_card_passenger	foreign key	(passenger_id)
