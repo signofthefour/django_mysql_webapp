@@ -212,6 +212,7 @@ class EditTripView(TemplateView):
             for visit in visit_list:
                 visit['departure_time'] = str(visit['departure_time']).upper()
                 visit['arrival_time'] = str(visit['arrival_time']).upper()
+                visit['stopping_point_id'] = STOPPING_LIST[visit['stopping_point_id']]
             
             context.update({"visit_list" : visit_list})
             context.update({'index': len(visit_list) + 1})
