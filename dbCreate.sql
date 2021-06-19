@@ -232,18 +232,28 @@ create table materialdb_Oneday_ticket (
 
 create table materialdb_Oneday_ticket_record (
 	`ticket_id` char(15),
+    `ticket_index` int,
     `route_id` char(4),
     `enter_point_id` char(7),
     `leave_point_id` char(7),
     `enter_time` time,
     `leave_time` time,
-    primary key (ticket_id, route_id),
+    primary key (ticket_id, ticket_index),
 	constraint fk_orticket foreign key(ticket_id)  references materialdb_Oneday_ticket(ticket_id),
     constraint fk_orroute foreign key(route_id) references materialdb_Route(route_id),
     constraint fk_orenter_id foreign key(enter_point_id) references materialdb_Stopping_point(id),
     constraint fk_orleave_id foreign key(leave_point_id) references materialdb_Stopping_point(id),
     check (enter_time < leave_time)
 );
+
+delimiter $$
+create trigger before_one_day_record_insert
+before insert on materialdb_Oneday_ticket_record
+for each row
+begin 
+    set new.ticket_index = (select count(*) + 1 from materialdb_Oneday_ticket_record r where r.ticket_id = new.ticket_id);
+end$$
+delimiter ;
 
 create	table	materialdb_Passenger
 (
@@ -260,9 +270,10 @@ create table materialdb_Magnetic_card
 (
 magnetic_card_id	char(8) primary key,
 purchase_date	datetime,
-passenger_id	char(8),
+passenger_id	char(8) not null,
 constraint	fk_magnetic_card_passenger	foreign key	(passenger_id)
 			references	materialdb_Passenger(passenger_id)
+            on update cascade on delete cascade
 );
 
 create	table	materialdb_Staff
@@ -271,9 +282,9 @@ staff_id	char(6)	primary key,
 job_category	varchar(20),
 dob	date,
 email	varchar(50),
-sex	char,
+sex	ENUM('F', 'M'),
 mobile_phone	char(10),
-internal_phone	char
+internal_phone	char(10)
 );
 
 create	table	materialdb_Workplace

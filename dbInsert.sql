@@ -59,10 +59,10 @@ values
 -- 3.street --
 insert into materialdb_Street (name)
 values
-('1 to 11 | Email to anti-phishing'),
-('4 to 3| Released for Mac to NSFNET'),
-('6 to 7 | HTML email to AOL and Delphi'),
-('8 to 10 | 2000s to Facebook Messaging system');
+('1 to 11 | Xa lo Ha Noi'),
+('4 to 3| Vo Van Ngan'),
+('6 to 7 | Duong So 2'),
+('8 to 10 | Mai Chi Tho');
 
 -- 2. distance --
 insert into materialdb_distance (first_int_id, second_int_id, street_id, dist_index, length) 
@@ -411,6 +411,5 @@ insert into materialdb_Workplace(staff_id, station_id)
 ('NV0003','BT00004');
 
 -- pricelist
-insert into materialdb_Price_list(bus_unit_price, week_day_price, weekend_price)
- values('5','30000','40000');
-
+-- insert into materialdb_Price_list(bus_unit_price, week_day_price, weekend_price)
+--  values('5','30000','40000');

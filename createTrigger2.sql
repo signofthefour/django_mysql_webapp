@@ -8,10 +8,11 @@ CREATE TRIGGER before_insert_monthly_ticket_record
 BEFORE INSERT ON materialdb_Monthly_ticket_record 
 FOR EACH ROW
 BEGIN
-	-- **TODO:
+	-- ** TODO:
 	-- check for valid stopping points (as registration)
 	-- check if that a monthly-ticket
 	-- check for valid ticket (not yet expired)
+
 	DECLARE EXPECTED_STOP_1 CHAR(7);
 	DECLARE EXPECTED_STOP_2 CHAR(7);
 	DECLARE ERROR_MESSAGE VARCHAR(128);
@@ -47,7 +48,7 @@ BEGIN
 		GROUP BY use_date
 	);
 	
-	IF (firstUseDate IS NOT NULL AND DATEDIFF(NEW.use_date, firstUseDate) < 30) THEN
+	IF (firstUseDate IS NOT NULL AND DATEDIFF(NEW.use_date, firstUseDate) > 30) THEN
 		SET ERROR_MESSAGE = 'Expired ticket';
 		SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = ERROR_MESSAGE;
